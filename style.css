@@ -37,11 +37,16 @@
 
         .flex1 { flex:100; }
         .flex2 { flex:200; }
+        .flex3 { flex:300; }
+        .flex4 { flex:400; }
+        .flex5 { flex:500; }
+        .flex6 { flex:600; }
+        .flex8 { flex:800; }
+        .flex10 { flex:1000; }
         .flex20px { flex: 1 20px; }
 
-        .border
-
         .tableTitle{
+            display:none;
             padding:3px;
             margin:3px;
             border:1px solid lightgrey;
@@ -50,7 +55,12 @@
 
 
         .tableRow { display: flex; }
-        .tableHeader { display: flex; }
+        .tableHeader {
+            padding:3px;
+            margin:3px;
+            /* background-color: lightgrey; */
+            text-align: center;
+         }
         .tableInput {
             font-size: 16pt;
 
@@ -64,7 +74,6 @@
             padding:3px;
             margin:3px;
             background-color: wheat;
-            border:1px solid red;
         }
         .tableButtons {
             background-color: lightblue;

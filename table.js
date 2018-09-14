@@ -135,6 +135,7 @@ function Table(view) {
         // table
         div = document.createElement('div');
         div.className = 'table'
+        this.tableView = view.appendChild(div)
         this.buildRowDom( div, { X:'X', Y:'Y' }, { header:true } )
 
         // buttons
