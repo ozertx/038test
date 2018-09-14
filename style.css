@@ -1,0 +1,71 @@
+
+        .body {
+            font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+            font-size: 16pt;
+            text-align: center;
+        }
+        .wrap {
+            border: solid 1px black;
+            width:1000px;
+
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            flex-wrap: wrap;
+       }
+
+        .panel {
+            width : 900px;
+        }
+
+       .row {
+           /* border: solid 1px wheat; */
+           display: flex;
+       }
+
+       .col {
+           border: solid 1px wheat;
+           margin: 10px;
+           padding: 10px;
+        }
+
+        .flex1 { flex:100; }
+        .flex2 { flex:200; }
+        .flex20px { flex: 1 20px; }
+
+        .border
+
+        .tableTitle{
+            padding:3px;
+            margin:3px;
+            border:1px solid lightgrey;
+
+        }
+
+
+        .tableRow { display: flex; }
+        .tableHeader { display: flex; }
+        .tableInput {
+            font-size: 16pt;
+
+            padding:3px;
+            margin:3px;
+            width:50px;
+            border:1px solid lightgrey;
+            background-color: lightgreen;
+        }
+        .tableButton {
+            padding:3px;
+            margin:3px;
+            background-color: wheat;
+            border:1px solid red;
+        }
+        .tableButtons {
+            background-color: lightblue;
+        }
