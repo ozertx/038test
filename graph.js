@@ -20,32 +20,28 @@ function Graph(view) {
     this.render = (context) => {
         let items = []
         data.forEach( item => items.push({ X:item.X, Y:item.Y })) // clone setData
+        items.sort( (a,b) => a.X-b.X )
         //console.log(items);
 
         axis()
-        context.lineWidth=2;
-        context.fillText("default111",100,100)
-        context.beginPath()
-        context.moveTo(0, 0)
-        context.lineTo(100, 0)
-        context.moveTo(0, 0)
-        context.lineTo(0, 100)
-        context.stroke();
-
-        // context.beginPath();
-        // context.arc(100, 100, 5, 0, 2 * Math.PI, false);
-        // context.fillStyle = "rgb(0, 0, 255)";
-        // context.fill();
-
-
         items.forEach( item => {
             let X = item.X*step
             let Y = -item.Y*step
             context.beginPath();
-            context.arc(X, Y, 5, 0, 2 * Math.PI, false);
+            context.arc(X, Y, 4, 0, 2 * Math.PI, false);
             context.fillStyle = "rgb(0, 0, 255)";
             context.fill();
+            context.fillText(`( ${item.X}, ${item.Y} )`, X+5, Y+5)
+
         })
+
+        items.forEach( (item,i) => {
+            let X = item.X*step
+            let Y = -item.Y*step
+            if( i==0 ) context.moveTo(X,Y)
+            else context.lineTo(X,Y)
+        })
+        context.stroke();
 
         function axis() {
             let lt = 20

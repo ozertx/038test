@@ -13,6 +13,7 @@ function Table(view) {
     this.rows = []
 
     this.length = () => this.rows.length
+    this.onChange = () => {}
 
     // DOM -------------------------
     this.setTitle = ( str = '' ) => this.titleView.innerHTML = str
@@ -34,12 +35,14 @@ function Table(view) {
         // abstract
         item.view = div
         this.rows.push(item)
+        this.onChange()
     }
 
     this.deleteRow = ( index = 0 ) => {
         if( !(index in this.rows) ) return
         this.tableView.removeChild(this.rows[index].view)
         this.rows.splice(index, 1)
+        this.onChange()
     }
 
     this.wipe = () => {
@@ -90,29 +93,28 @@ function Table(view) {
             lView.appendChild(header)
         }
         else {
-            let edit = null
-            edit = document.createElement('input');
-            edit.classList.add('tableInput')
-            edit.classList.add('flex1')
-            edit.readOnly = true
-            edit.addEventListener('keypress', () => {
-                // console.log(item)
-                console.log(edit.value)
+            let edit1 = document.createElement('input');
+            edit1.classList.add('tableInput')
+            edit1.classList.add('flex1')
+            // edit1.readOnly = true
+            edit1.addEventListener('keypress', () => {
+                item.X = parseFloat(edit1.value)
+                this.onChange()
             })
-            edit.value = item.X
-            view.appendChild(edit)
+            edit1.value = item.X
+            view.appendChild(edit1)
 
-            edit = document.createElement('input');
-            edit.classList.add('tableInput')
-            edit.classList.add('flex1')
-            edit.readOnly = true
-            edit.addEventListener('keypress', () => {
-                // console.log(item)
-                console.log(edit.value)
+            let edit2 = document.createElement('input');
+            edit2.classList.add('tableInput')
+            edit2.classList.add('flex1')
+            // edit2.readOnly = true
+            edit2.addEventListener('keypress', () => {
+                item.Y = parseFloat(edit2.value)
+                this.onChange()
             })
-            edit.value = item.Y
+            edit2.value = item.Y
 
-            view.appendChild(edit)
+            view.appendChild(edit2)
 
             let btn = document.createElement('div');
             btn.classList.add('tableButton')
