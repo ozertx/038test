@@ -39,6 +39,7 @@ table1.addButton("удалить", table => {
     console.dir(table.rows);
     table.deleteRow(0)
 })
+graph1.setData(table1.rows)
 
 let table2 = new Table(t2)
 // table2.setTitle("Таблица 2")

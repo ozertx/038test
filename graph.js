@@ -1,216 +1,227 @@
 // main
 
-console.log("graph");
+console.log("graph")
 
 function Graph(view) {
     this.view = view
+    this.setRender = render => this.render = render
+    let t = null
+    this.redraw = null
 
-    this.init = () => {
-        // console.log("constructor");
-        let div
+    let data = [] // { X , Y}
 
-        div = document.createElement('canvas');
-        div.className = 'graph'
-        this.buttonsView = view.appendChild(div)
-
-        let t = new Transformator(div)
-        // // title
-        // div = document.createElement('div');
-        // div.classList.add('tableTitle')
-        // this.titleView = view.appendChild(div)
-
-        // // table
-        // div = document.createElement('div');
-        // div.className = 'table'
-        // this.tableView = view.appendChild(div)
-        // this.buildRowDom( div, { X:'X', Y:'Y' }, { header:true } )
-        //
-        // // buttons
-    }
-    this.init();
-}
-
-// -----------------------------------------------------
-
-function Transformator (view)  {
-
-    this.view = view
-    this.context = null
-    // this.view.width = 800;
-    // this.view.height = 600;
-
-    var gkhead = new Image;
-    var lastX=this.view.width/2, lastY=this.view.height/2;
-    var scaleFactor = 1.05;
-
-
-    this.init = () => {
-        this.context = this.view.getContext('2d')
-        this.trackTransforms(this.context);
-        this.redraw();
-
-
-        var dragStart,dragged;
-
-        this.view.addEventListener('mousedown', (evt) => {
-            document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-            lastX = evt.offsetX || (evt.pageX - this.view.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - this.view.offsetTop);
-            dragStart = this.context.transformedPoint(lastX,lastY/2);// fix
-            dragged = false;
-        },false);
-
-        this.view.addEventListener('mousemove', (evt) => {
-            lastX = evt.offsetX || (evt.pageX - this.view.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - this.view.offsetTop);
-            dragged = true;
-            this.redraw();
-
-            if (dragStart){
-                var pt = this.context.transformedPoint(lastX,lastY/2); // fix
-                // console.log(lastX,lastY)
-                // console.log(pt)
-                // console.log(pt.x-dragStart.x,pt.y-dragStart.y)
-                this.context.translate(pt.x-dragStart.x,pt.y-dragStart.y);
-                this.redraw();
-            }
-        },false);
-
-        this.view.addEventListener('mouseup', (evt) => {
-            dragStart = null;
-            if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
-        },false);
-
-
-        var zoom = (clicks) => {
-            var pt = this.context.transformedPoint(lastX,lastY/2); // fix
-            this.context.translate(pt.x,pt.y);
-            var factor = Math.pow(scaleFactor,clicks);
-            this.context.scale(factor,factor);
-            this.context.translate(-pt.x,-pt.y);
-            this.redraw();
-        }
-
-        var handleScroll = (evt) => {
-            var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
-            if (delta) zoom(delta);
-            return evt.preventDefault() && false;
-        };
-
-        this.view.addEventListener('DOMMouseScroll',handleScroll,false);
-        this.view.addEventListener('mousewheel',handleScroll,false);
+    this.setData = (arr) => {
+        data = arr
+        this.redraw()
     }
 
- // compleate
-    this.redraw = (item) => {
-        let context = this.context
-        gkhead.src = 'http://phrogz.net/tmp/gkhead.jpg';
-
-        // Clear the entire this.view
-        var p1 = this.context.transformedPoint(0,0);
-        var p2 = this.context.transformedPoint(this.view.width,this.view.height);
-        this.context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-
-        this.context.save();
-        this.context.setTransform(1,0,0,1,0,0);
-        this.context.clearRect(0,0,this.view.width,this.view.height);
-        this.context.restore();
-
-        this.context.fillText("Hello World",10,50);
-
-        // ctx.fillRect(width / -2, height / -2, width, height);
-
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(100, 0);
-        context.moveTo(0, 0);
-        context.lineTo(0, 100);
-
-
-        // console.log(lastX, lastY);
-        // let X = lastX
-        // let Y = lastY
-        // context.moveTo(X-100, Y);
-        // context.lineTo(X+100, Y);
-        // context.moveTo(X, Y-100);
-        // context.lineTo(X, Y+100);
-
-        X = context.transformedPoint(lastX,lastY).x
-        Y = context.transformedPoint(lastX,lastY/2).y
-        context.moveTo(X-100, Y);
-        context.lineTo(X+100, Y);
-        context.moveTo(X, Y-100);
-        context.lineTo(X, Y+100);
+    this.render = (context) => {
+        context.lineWidth=2;
+        context.fillText("default111",100,100)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(100, 0)
+        context.moveTo(0, 0)
+        context.lineTo(0, 100)
         context.stroke();
 
-        // this.context.drawImage(gkhead,0,0);
+        context.beginPath();
+        context.arc(100, 100, 5, 0, 2 * Math.PI, false);
+        context.fillStyle = "rgb(0, 0, 255)";
+        context.fill();
 
+
+        data.forEach( item => {
+            context.beginPath();
+            context.arc(item.X*100, item.Y*100, 50, 0, 2 * Math.PI, false);
+            context.fillStyle = "rgb(0, 0, 255)";
+            context.fill();
+        })
     }
 
-    // Adds this.context.getTransform() - returns an SVGMatrix
-    // Adds this.context.transformedPoint(x,y) - returns an SVGPoint
-    this.trackTransforms = () => {
-        var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-        var xform = svg.createSVGMatrix();
-        this.context.getTransform = () => { return xform; };
+    // this.render = (context) => {
+    // data.forEach( item => {})
+    //
+    // }
 
-        var savedTransforms = [];
-        var save = this.context.save;
-        this.context.save = () => {
-            savedTransforms.push(xform.translate(0,0));
-            return save.call(this.context);
-        };
+    this.init = () => {
+        let div
 
-        var restore = this.context.restore;
-        this.context.restore = () => {
-            xform = savedTransforms.pop();
-            return restore.call(this.context);
-        };
+        div = document.createElement('canvas')
+        div.className = 'graph'
+        this.buttonsView = view.appendChild(div)
+        t = new Transformator( div, this.render )
+        this.redraw = () => t.redraw()
 
-        var scale = this.context.scale;
-        this.context.scale = (sx,sy) => {
-            xform = xform.scaleNonUniform(sx,sy);
-            return scale.call(this.context,sx,sy);
-        };
+    }
+    this.init()
+}
+// -----------------------------------------------------
 
-        var rotate = this.context.rotate;
-        this.context.rotate = (radians) => {
-            xform = xform.rotate(radians*180/Math.PI);
-            return rotate.call(this.context,radians);
-        };
+// let defaultrender = (context) => { // default render
+//     context.lineWidth=2;
+//     context.fillText("default111",100,100)
+//     context.beginPath()
+//     context.moveTo(0, 0)
+//     context.lineTo(100, 0)
+//     context.moveTo(0, 0)
+//     context.lineTo(0, 100)
+// }
+// -----------------------------------------------------
 
-        var translate = this.context.translate;
-        this.context.translate = (dx,dy) => {
-            xform = xform.translate(dx,dy);
-            return translate.call(this.context,dx,dy);
-        };
+function Transformator ( view, render )  {
 
-        var transform = this.context.transform;
-        this.context.transform = (a,b,c,d,e,f) => {
-            var m2 = svg.createSVGMatrix();
-            m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
-            xform = xform.multiply(m2);
-            return transform.call(this.context,a,b,c,d,e,f);
-        };
+    let context
+    let lastX = view.width/2
+    let lastY = view.height/2*2 // fix
+    let scaleFactor = 1.05
 
-        var setTransform = this.context.setTransform;
-        this.context.setTransform = (a,b,c,d,e,f) => {
-            xform.a = a;
-            xform.b = b;
-            xform.c = c;
-            xform.d = d;
-            xform.e = e;
-            xform.f = f;
-            return setTransform.call(this.context,a,b,c,d,e,f);
-        };
+    this.context = context
+    this.view = view
+    this.debug = true
 
-        var pt  = svg.createSVGPoint();
-        this.context.transformedPoint = (x,y) => {
-            pt.x=x; pt.y=y;
-            return pt.matrixTransform(xform.inverse());
+    this.render = render
+
+    this.init = () => {
+        context = view.getContext('2d')
+        this.trackTransforms(context)
+        context.scale(1,0.5) // fix
+        context.translate(lastX,lastY)
+        this.redraw()
+
+        let dragStart,dragged
+
+        view.addEventListener('mouseup', (evt) => dragStart = null, false)
+        view.addEventListener('mousedown', (evt) => {
+            document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
+            lastX = evt.offsetX || (evt.pageX - view.offsetLeft)
+            lastY = evt.offsetY || (evt.pageY - view.offsetTop)
+            console.log(lastX, lastY)
+            dragStart = context.transformedPoint(lastX,lastY)
+            dragged = false
+        },false)
+        view.addEventListener('mousemove', (evt) => {
+            lastX = evt.offsetX || (evt.pageX - view.offsetLeft)
+            lastY = evt.offsetY || (evt.pageY - view.offsetTop)
+            dragged = true
+            this.redraw()
+
+            if (dragStart){
+                let pt = context.transformedPoint(lastX,lastY)
+                context.translate(pt.x-dragStart.x,pt.y-dragStart.y)
+                this.redraw()
+            }
+        },false)
+
+        let zoom = (clicks) => {
+            let pt = context.transformedPoint(lastX,lastY)
+            context.translate(pt.x,pt.y)
+            let factor = Math.pow(scaleFactor,clicks)
+            context.scale(factor,factor)
+            context.translate(-pt.x,-pt.y)
+            this.redraw()
+        }
+
+        let handleScroll = (evt) => {
+            let delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0
+            if (delta) zoom(delta)
+            return evt.preventDefault() && false
+        }
+
+        view.addEventListener('DOMMouseScroll',handleScroll,false)
+        view.addEventListener('mousewheel',handleScroll,false)
+    }
+
+    this.redraw = () => {
+
+        // Clear the entire view
+        let p1 = context.transformedPoint(0,0)
+        let p2 = context.transformedPoint(view.width,view.height)
+        context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y)
+
+        context.save()
+        context.setTransform(1,0,0,1,0,0)
+        context.clearRect(0,0,view.width,view.height)
+        context.restore()
+
+        if( this.render != null ) this.render(context)
+
+        // debug mouse pointer
+        if( this.debug ) {
+            let X = context.transformedPoint(lastX,lastY).x
+            let Y = context.transformedPoint(lastX,lastY).y
+            context.moveTo(X-100, Y)
+            context.lineTo(X+100, Y)
+            context.moveTo(X, Y-100)
+            context.lineTo(X, Y+100)
+            context.stroke()
         }
     }
 
-    this.init();
+    // Adds context.getTransform() - returns an SVGMatrix
+    // Adds context.transformedPoint(x,y) - returns an SVGPoint
+    this.trackTransforms = () => {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg",'svg')
+        let xform = svg.createSVGMatrix()
+        context.getTransform = () => { return xform }
+
+        let savedTransforms = []
+        let save = context.save
+        context.save = () => {
+            savedTransforms.push(xform.translate(0,0))
+            return save.call(context)
+        }
+
+        let restore = context.restore
+        context.restore = () => {
+            xform = savedTransforms.pop()
+            return restore.call(context)
+        }
+
+        let scale = context.scale
+        context.scale = (sx,sy) => {
+            xform = xform.scaleNonUniform(sx,sy)
+            return scale.call(context,sx,sy)
+        }
+
+        let rotate = context.rotate
+        context.rotate = (radians) => {
+            xform = xform.rotate(radians*180/Math.PI)
+            return rotate.call(context,radians)
+        }
+
+        let translate = context.translate
+        context.translate = (dx,dy) => {
+            xform = xform.translate(dx,dy)
+            return translate.call(context,dx,dy)
+        }
+
+        let transform = context.transform
+        context.transform = (a,b,c,d,e,f) => {
+            let m2 = svg.createSVGMatrix()
+            m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+            xform = xform.multiply(m2)
+            return transform.call(context,a,b,c,d,e,f)
+        }
+
+        let setTransform = context.setTransform
+        context.setTransform = (a,b,c,d,e,f) => {
+            xform.a = a
+            xform.b = b
+            xform.c = c
+            xform.d = d
+            xform.e = e
+            xform.f = f
+            return setTransform.call(context,a,b,c,d,e,f)
+        }
+
+        let pt  = svg.createSVGPoint()
+        context.transformedPoint = (x,y) => {
+            pt.x=x; pt.y=y/2; // scale fix
+            return pt.matrixTransform(xform.inverse())
+        }
+    }
+
+    this.init()
 
 }
