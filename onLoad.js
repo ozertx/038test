@@ -1,15 +1,27 @@
 // main
 
-// alert('hello');
+console.log("onLoad");
 
-console.log("hello onLoad");
-
+// INIT ------------------------------
 
 let t1 = document.getElementById("t1");
 let t2 = document.getElementById("t2");
 let t3 = document.getElementById("t3");
 
-// INIT ------------------------------
+let g1 = document.getElementById("g1");
+let g2 = document.getElementById("g2");
+
+
+
+// graphs ------------------------------------------------
+let graph1 = new Graph(g1)
+let graph2 = new Graph(g2)
+
+
+
+
+
+// tables ------------------------------------------------
 let table1 = new Table(t1)
 // table1.setTitle("Таблица 1")
 table1.addRow({ X:1, Y:2 })

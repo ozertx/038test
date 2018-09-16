@@ -12,6 +12,8 @@ function Table(view) {
     this.buttonsView = null
     this.rows = []
 
+    this.length = () => this.rows.length
+
     // DOM -------------------------
     this.setTitle = ( str = '' ) => this.titleView.innerHTML = str
 
@@ -33,6 +35,32 @@ function Table(view) {
         item.view = div
         this.rows.push(item)
     }
+
+    this.deleteRow = ( index = 0 ) => {
+        if( !(index in this.rows) ) return
+        this.tableView.removeChild(this.rows[index].view)
+        this.rows.splice(index, 1)
+    }
+
+    this.wipe = () => {
+        do this.deleteRow()
+        while ( this.length()>0 )
+    }
+
+    this.addButton = ( str = '', listener ) => {
+        let div = document.createElement('div');
+        div.className = 'tableButton'
+        div.innerHTML = str
+        div.addEventListener('click', () => listener(this) )
+        view.appendChild(div)
+    }
+
+    this.createDomTable = () => { // dep
+        let div = document.createElement('div');
+        div.className = 'table'
+        this.tableView = view.appendChild(div)
+    }
+
 
     this.buildRowDom = ( view, item, options = {} ) => {
 
@@ -94,33 +122,6 @@ function Table(view) {
         }
     }
 
-    this.deleteRow = ( index = 0 ) => {
-        if( !(index in this.rows) ) return
-        this.tableView.removeChild(this.rows[index].view)
-        this.rows.splice(index, 1)
-    }
-
-    this.wipe = () => {
-        do this.deleteRow()
-        while ( this.length()>0 )
-    }
-
-    this.addButton = ( str = '', listener ) => {
-        let div = document.createElement('div');
-        div.className = 'tableButton'
-        div.innerHTML = str
-        div.addEventListener('click', () => listener(this) )
-        view.appendChild(div)
-    }
-
-    this.createDomTable = () => { // dep
-        let div = document.createElement('div');
-        div.className = 'table'
-        this.tableView = view.appendChild(div)
-    }
-
-    this.length = () => this.rows.length
-
     this.init = () => {
         // console.log("constructor");
         let div = null
@@ -144,4 +145,7 @@ function Table(view) {
         this.buttonsView = view.appendChild(div)
     }
     this.init();
+
+
+
 }
