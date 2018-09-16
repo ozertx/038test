@@ -1,5 +1,6 @@
 // main
 
+
 console.log("graph")
 
 function Graph(view) {
@@ -7,6 +8,7 @@ function Graph(view) {
     this.setRender = render => this.render = render
     let t = null
     this.redraw = null
+    let step=25
 
     let data = [] // { X , Y}
 
@@ -16,6 +18,11 @@ function Graph(view) {
     }
 
     this.render = (context) => {
+        let items = []
+        data.forEach( item => items.push({ X:item.X, Y:item.Y })) // clone setData
+        //console.log(items);
+
+        axis()
         context.lineWidth=2;
         context.fillText("default111",100,100)
         context.beginPath()
@@ -25,18 +32,46 @@ function Graph(view) {
         context.lineTo(0, 100)
         context.stroke();
 
-        context.beginPath();
-        context.arc(100, 100, 5, 0, 2 * Math.PI, false);
-        context.fillStyle = "rgb(0, 0, 255)";
-        context.fill();
+        // context.beginPath();
+        // context.arc(100, 100, 5, 0, 2 * Math.PI, false);
+        // context.fillStyle = "rgb(0, 0, 255)";
+        // context.fill();
 
 
-        data.forEach( item => {
+        items.forEach( item => {
+            let X = item.X*step
+            let Y = -item.Y*step
             context.beginPath();
-            context.arc(item.X*100, item.Y*100, 50, 0, 2 * Math.PI, false);
+            context.arc(X, Y, 5, 0, 2 * Math.PI, false);
             context.fillStyle = "rgb(0, 0, 255)";
             context.fill();
         })
+
+        function axis() {
+            let lt = 20
+
+            context.beginPath()
+
+            context.moveTo(-lt*step, 0)
+            context.lineTo(+lt*step, 0)
+
+            for( i = -lt; i<=lt; i++ ){
+                context.moveTo(i*step, -5)
+                context.lineTo(i*step, +5)
+                context.fillText("" + i,i*step + 2.5 , -5)
+            }
+
+            context.moveTo( 0, -lt*step)
+            context.lineTo( 0, +lt*step)
+
+            for( i = -lt; i<=lt; i++ ){
+                if (i==0) continue;
+                context.moveTo( -5, i*step)
+                context.lineTo( +5,i*step)
+                context.fillText("" +(-i), 5,i*step - 2.5 )
+            }
+            context.stroke();
+        }
     }
 
     // this.render = (context) => {
